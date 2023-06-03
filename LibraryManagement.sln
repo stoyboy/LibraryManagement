@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryManagement.Webapp", "LibraryManagement.Webapp\LibraryManagement.Webapp.csproj", "{2DEE932A-AFDE-456A-96B3-F4F4D6F92494}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryManagement.Application", "LibraryManagement.Application\LibraryManagement.Application.csproj", "{6B86DBA2-8B22-4D86-A33C-99C2B0DBC33D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryManagement.Test", "LibraryManagement.Test\LibraryManagement.Test.csproj", "{33A972F3-E760-4699-B226-DEAFA22C53CD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2DEE932A-AFDE-456A-96B3-F4F4D6F92494}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DEE932A-AFDE-456A-96B3-F4F4D6F92494}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DEE932A-AFDE-456A-96B3-F4F4D6F92494}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DEE932A-AFDE-456A-96B3-F4F4D6F92494}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B86DBA2-8B22-4D86-A33C-99C2B0DBC33D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B86DBA2-8B22-4D86-A33C-99C2B0DBC33D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B86DBA2-8B22-4D86-A33C-99C2B0DBC33D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B86DBA2-8B22-4D86-A33C-99C2B0DBC33D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33A972F3-E760-4699-B226-DEAFA22C53CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33A972F3-E760-4699-B226-DEAFA22C53CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33A972F3-E760-4699-B226-DEAFA22C53CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33A972F3-E760-4699-B226-DEAFA22C53CD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
