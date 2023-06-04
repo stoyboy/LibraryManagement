@@ -1,0 +1,32 @@
+﻿@page "{guid}"
+@model LibraryManagement.Webapp.Pages.Employees.EditModel
+@{
+}
+
+<form method="post">
+    <input type="hidden" asp-for="Employee.Guid" />
+
+    <div class="row">
+        <div class="col-12 col-sm-6">
+            <label asp-for="Employee.Firstname">Vorname</label>
+            <input class="form-control" asp-for="Employee.Firstname" />
+            <span class="text-danger" asp-validation-for="Employee.Firstname"></span>
+        </div>
+        <div class="col-12 col-sm-6">
+            <label asp-for="Employee.Lastname">Nachname</label>
+            <input class="form-control" asp-for="Employee.Lastname" />
+            <span class="text-danger" asp-validation-for="Employee.Lastname"></span>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <label asp-for="Employee.RoleGuid">Rolle</label>
+            <select class="form-select"
+                    asp-items="@Model.RoleSelectList"
+                    asp-for="Employee.RoleGuid"></select>
+        </div>
+    </div>
+    <div class="text-danger" asp-validation-summary=ModelOnly></div>
+    <button class="mt-2 btn btn-primary">Speichern</button>
+</form>
