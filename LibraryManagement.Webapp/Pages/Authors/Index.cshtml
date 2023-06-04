@@ -1,0 +1,36 @@
+﻿@page
+@model LibraryManagement.Webapp.Pages.Books.IndexModel
+@{
+}
+
+<p>Authors request from database as of @DateTime.Now.ToString("g")</p>
+<p>Total number of elements found: @Model.Authors.Count</p>
+
+<table class="table table-sm">
+    <thead>
+        <tr>
+            <th>Vorname</th>
+            <th>Nachname</th>
+            <th>Geburtsdatum</th>
+            <th>Nationalität</th>
+            <th>Anzahl von Büchern</th>
+            <th>Aktionen</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var author in Model.Authors)
+        {
+            <tr>
+                <td>@author.Firstname</td>
+                <td>@author.Lastname</td>
+                <td>@author.BirthDate.ToString("d")</td>
+                <td>@author.Nationality</td>
+                <td>@author.BookCount</td>
+                <td>
+                    <a asp-page="/Authors/Details" asp-route-guid="@author.Guid">Details</a>
+                    <a asp-page="/Authors/Edit" asp-route-guid="@author.Guid">Edit</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
