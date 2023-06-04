@@ -1,0 +1,44 @@
+﻿@page "{guid}"
+@model LibraryManagement.Webapp.Pages.Books.DetailsModel
+@{
+}
+
+<h3>Details of author @Model.Author.Firstname @Model.Author.Lastname</h3>
+<br />
+<h4>List of their books</h4>
+
+<table class="table table-sm">
+    <thead>
+        <tr>
+            <th>Titel</th>
+            <th>Verlag</th>
+            <th>Jahr der Veröffentlichung</th>
+            <th>Verfügbarkeit</th>
+            <th>Nicht verfügbar bis</th>
+            <th>Ausgeliehen von</th>
+            <th>Rating</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var book in Model.Author.Books)
+        {
+            var returnDate = book.Borrow != null ? book.Borrow.ReturnDate.ToString("D") : "";
+            var borrowMember = book.Borrow != null ? $"{book.Borrow.Member.Firstname} {book.Borrow.Member.Lastname}" : "";
+
+            <tr style="@(book.Rating == 10 ? "background-color: #F0E68C" : "")">
+                <td>@book.Title</td>
+                <td>@book.Publisher</td>
+                <td>@book.Title</td>
+                <td class="@(book.Borrow == null ? "" : "text-danger")">@(book.Borrow == null ? "verfügbar" : "nicht verfügbar")</td>
+                <td class="@(book.Borrow == null ? "" : "text-danger")">@returnDate</td>
+                <td class="@(book.Borrow == null ? "" : "text-danger")">
+                    @if (book.Borrow != null)
+                    {
+                        <a asp-page="/Members/Details" asp-route-guid="@book.Borrow.Member.Guid">@borrowMember</a>
+                    }
+                </td>
+                <td>@book.Rating / 10</td>
+            </tr>
+        }
+    </tbody>
+</table>
