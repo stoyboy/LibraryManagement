@@ -1,11 +1,15 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace LibraryManagement.Application.Models
 {
+    [Index(nameof(Name), IsUnique = true)]
+    [Table("Roles")]
     public class Role
     {
         public int RoleId { get; private set; }
