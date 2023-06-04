@@ -12,6 +12,9 @@ namespace LibraryManagement.Webapp.Dto
 
             CreateMap<EmployeeDto, Employee>();
             CreateMap<Employee, EmployeeDto>();
+
+            CreateMap<BookDto, Book>();
+            CreateMap<Book, BookDto>();
         }
     }
 }
