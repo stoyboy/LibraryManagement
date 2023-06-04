@@ -1,0 +1,60 @@
+﻿@page
+@model LibraryManagement.Webapp.Pages.Employees.IndexModel
+@{
+}
+
+<p>Employees request from database as of @DateTime.Now.ToString("g")</p>
+<p>Total number of elements found: @Model.Employees.Count</p>
+
+<form method="post" asp-page-handler="NewEmployee">
+    <div class="row">
+        <div class="col-6">
+            <label asp-for="NewEmployee.Firstname">Vorname</label>
+            <input class="form-control" asp-for="NewEmployee.Firstname" />
+            <small>
+                <span class="text-danger" asp-validation-for="NewEmployee.Firstname"></span>
+            </small>
+        </div>
+        <div class="col-6">
+            <label asp-for="NewEmployee.Lastname">Nachname</label>
+            <input class="form-control" asp-for="NewEmployee.Lastname" />
+            <small>
+                <span class="text-danger" asp-validation-for="NewEmployee.Lastname"></span>
+            </small>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <label asp-for="NewEmployee.RoleGuid">Rolle</label>
+            <select class="form-select"
+                    asp-items="@Model.RoleSelectList"
+                    asp-for="NewEmployee.RoleGuid"></select>
+        </div>
+    </div>
+    <div class="text-danger" asp-validation-summary=ModelOnly></div>
+    <button class="mt-2 btn btn-primary">Speichern</button>
+</form>
+
+<table class="table table-sm">
+    <thead>
+        <tr>
+            <th>Vorname</th>
+            <th>Nachname</th>
+            <th>Role</th>
+            <th>Aktionen</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var employee in Model.Employees)
+        {
+            <tr>
+                <td>@employee.Firstname</td>
+                <td>@employee.Lastname</td>
+                <td>@employee.Role</td>
+                <td>
+                    <a asp-page="/Employees/Edit" asp-route-guid="@employee.Guid">Edit</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
