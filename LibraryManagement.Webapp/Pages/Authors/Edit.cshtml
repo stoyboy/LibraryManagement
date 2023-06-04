@@ -1,0 +1,37 @@
+﻿@page "{guid}"
+@model LibraryManagement.Webapp.Pages.Authors.EditModel
+@{
+}
+
+<form method="post">
+    <input type="hidden" asp-for="Author.Guid" />
+
+    <div class="row">
+        <div class="col-12 col-sm-6">
+            <label asp-for="Author.Firstname">Vorname</label>
+            <input class="form-control" asp-for="Author.Firstname" />
+            <span class="text-danger" asp-validation-for="Author.Firstname"></span>
+        </div>
+        <div class="col-12 col-sm-6">
+            <label asp-for="Author.Lastname">Nachname</label>
+            <input class="form-control" asp-for="Author.Lastname" />
+            <span class="text-danger" asp-validation-for="Author.Lastname"></span>
+        </div>
+        
+    </div>
+    <div class="row">
+        <div class="col-12 col-sm-6">
+            <label asp-for="Author.Nationality">Nationalität</label>
+            <input class="form-control" asp-for="Author.Nationality" />
+            <span class="text-danger" asp-validation-for="Author.Nationality"></span>
+        </div>
+        <div class="col-12 col-sm-6">
+            <label asp-for="Author.BirthDate">Geburtsdatum</label>
+            <input type="date" class="form-control" asp-for="Author.BirthDate" />
+            <span class="text-danger" asp-validation-for="Author.BirthDate"></span>
+
+        </div>
+    </div>
+    <div class="mt-3 text-danger" asp-validation-summary=All></div>
+    <button class="btn-primary btn" type="submit">Send</button>
+</form>
