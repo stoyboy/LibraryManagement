@@ -1,25 +1,33 @@
-var builder = WebApplication.CreateBuilder(args);
+using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using LibraryManagement.Application.Infrastructure;
+using LibraryManagement.Webapp.Dto;
 
-// Add services to the container.
-builder.Services.AddRazorPages();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+// Erstellen und seeden der Datenbank
+var opt = new DbContextOptionsBuilder()
+    .UseSqlite("Data Source=stores.db")  // Keep connection open (only needed with SQLite in memory db)
+    .Options;
+using (var db = new LibraryContext(opt))
 {
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    db.Database.EnsureDeleted();
+    db.Database.EnsureCreated();
+    db.Seed();
 }
 
+var builder = WebApplication.CreateBuilder(args);
+// Add services to the container.
+builder.Services.AddDbContext<LibraryContext>(opt =>
+{
+    opt.UseSqlite("Data Source=stores.db");
+});
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddRazorPages();
+
+// MIDDLEWARE
+var app = builder.Build();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
-app.UseRouting();
-
-app.UseAuthorization();
-
 app.MapRazorPages();
-
 app.Run();
