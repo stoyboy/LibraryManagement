@@ -57,7 +57,7 @@ namespace LibraryManagement.Webapp.Pages.Books
             {
                 return RedirectToPage();
             }
-            Console.WriteLine(editBooks[bookGuid]);
+            
             _mapper.Map(editBooks[bookGuid], book);
             _db.Entry(book).State = EntityState.Modified;
 
