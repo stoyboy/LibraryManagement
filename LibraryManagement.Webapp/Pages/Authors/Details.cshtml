@@ -7,38 +7,45 @@
 <br />
 <h4>List of their books</h4>
 
-<table class="table table-sm">
-    <thead>
-        <tr>
-            <th>Titel</th>
-            <th>Verlag</th>
-            <th>Jahr der Veröffentlichung</th>
-            <th>Verfügbarkeit</th>
-            <th>Nicht verfügbar bis</th>
-            <th>Ausgeliehen von</th>
-            <th>Rating</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var book in Model.Author.Books)
-        {
-            var returnDate = book.Borrow != null ? book.Borrow.ReturnDate.ToString("D") : "";
-            var borrowMember = book.Borrow != null ? $"{book.Borrow.Member.Firstname} {book.Borrow.Member.Lastname}" : "";
-
-            <tr style="@(book.Rating == 10 ? "background-color: #F0E68C" : "")">
-                <td>@book.Title</td>
-                <td>@book.Publisher</td>
-                <td>@book.Title</td>
-                <td class="@(book.Borrow == null ? "" : "text-danger")">@(book.Borrow == null ? "verfügbar" : "nicht verfügbar")</td>
-                <td class="@(book.Borrow == null ? "" : "text-danger")">@returnDate</td>
-                <td class="@(book.Borrow == null ? "" : "text-danger")">
-                    @if (book.Borrow != null)
-                    {
-                        <a asp-page="/Members/Details" asp-route-guid="@book.Borrow.Member.Guid">@borrowMember</a>
-                    }
-                </td>
-                <td>@book.Rating / 10</td>
+<form method="post" asp-page-handler="EditOffer">
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>Titel</th>
+                <th>Verlag</th>
+                <th>Jahr der Veröffentlichung</th>
+                <th>Verfügbarkeit</th>
+                <th>Nicht verfügbar bis</th>
+                <th>Ausgeliehen von</th>
+                <th>Rating</th>
+                <th>Aktion</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var book in Model.Author.Books)
+            {
+                var returnDate = book.Borrow != null ? book.Borrow.ReturnDate.ToString("D") : "";
+                var borrowMember = book.Borrow != null ? $"{book.Borrow.Member.Firstname} {book.Borrow.Member.Lastname}" : "";
+
+                <tr style="@(book.Rating == 10 ? "background-color: #F0E68C" : "")">
+                    <td>@book.Title</td>
+                    <td>
+                        <input type="hidden" asp-for="EditBooks[book.Guid].Guid" />
+                        <input asp-for="EditBooks[book.Guid].Publisher" />
+                    </td>
+                    <td><input style="width: 100px" asp-for="EditBooks[book.Guid].Year" /></td>
+                    <td class="@(book.Borrow == null ? "" : "text-danger")">@(book.Borrow == null ? "verfügbar" : "nicht verfügbar")</td>
+                    <td class="@(book.Borrow == null ? "" : "text-danger")">@returnDate</td>
+                    <td class="@(book.Borrow == null ? "" : "text-danger")">
+                        @if (book.Borrow != null)
+                        {
+                            <a asp-page="/Members/Details" asp-route-guid="@book.Borrow.Member.Guid">@borrowMember</a>
+                        }
+                    </td>
+                    <td><input style="width: 50px" asp-for="EditBooks[book.Guid].Rating" min="0" max="10" /> / 10</td>
+                    <td><button class="btn btn-primary" type="submit" asp-page-handler="EditBook" asp-route-bookGuid="@book.Guid">Speichern</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</form>
