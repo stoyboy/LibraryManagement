@@ -1,0 +1,13 @@
+﻿@page "{guid}"
+@model LibraryManagement.Webapp.Pages.Authors.DeleteModel
+@{
+}
+<h3>Autor löschen</h3>
+
+<div class="border border-danger p-3">
+    <p>Soll der Autor @Model.Author.Firstname @Model.Author.Lastname gelöscht werden?</p>
+    <form method="post">
+        <button asp-page-handler="Delete" type="submit" class="btn btn-danger">Ja</button>
+        <button asp-page-handler="Cancel" type="submit" class="btn btn-secondary">Nein</button>
+    </form>
+</div>

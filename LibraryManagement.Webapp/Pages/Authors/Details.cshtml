@@ -19,6 +19,7 @@
                 <th>Ausgeliehen von</th>
                 <th>Rating</th>
                 <th>Aktion</th>
+                <th>Löschen?</th>
             </tr>
         </thead>
         <tbody>
@@ -44,8 +45,16 @@
                     </td>
                     <td><input style="width: 50px" asp-for="EditBooks[book.Guid].Rating" min="0" max="10" /> / 10</td>
                     <td><button class="btn btn-primary" type="submit" asp-page-handler="EditBook" asp-route-bookGuid="@book.Guid">Speichern</button></td>
+                    <td>
+                        <input class="form-check-input" asp-for="BooksToDelete[book.Guid]" />
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
+
+    <button type="submit" class="btn btn-danger"
+        asp-page-handler="Delete">
+        Ausgewählte Elemente löschen
+    </button>
 </form>

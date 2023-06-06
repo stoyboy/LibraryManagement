@@ -41,7 +41,8 @@ namespace LibraryManagement.Application.Infrastructure.Repositories
 
         public override (bool success, string? message) Delete(Author entity)
         {
-            if (entity.Books.Count > 0) { return (false, "Dem Autor sind noch Bücher zugewiesen."); }
+            var books = _db.Books.Where(b => b.Author.Guid == entity.Guid).ToList();
+            if (books.Count > 0) { return (false, $"Dem Autor {entity.Firstname} {entity.Lastname} sind noch Bücher zugewiesen."); }
             return base.Delete(entity);
         }
     }

@@ -30,6 +30,7 @@ namespace LibraryManagement.Webapp.Pages.Books
         public Author Author { get; private set; } = default!;
         public IReadOnlyList<Book> Books { get; private set; } = new List<Book>();
         public Dictionary<Guid, BookDto> EditBooks { get; set; } = new();
+        public Dictionary<Guid, bool> BooksToDelete { get; set; } = new();
 
         public IActionResult OnGet(Guid guid)
         {
@@ -77,6 +78,22 @@ namespace LibraryManagement.Webapp.Pages.Books
             return RedirectToPage();
         }
 
+        public IActionResult OnPostDelete(Guid guid, Dictionary<Guid, bool> booksToDelete)
+        {
+            var booksDb = _books.Set.Where(o => o.Author.Guid == guid).ToDictionary(o => o.Guid, o => o);
+            var bookGuids = booksToDelete.Where(o => o.Value == true).Select(o => o.Key);
+
+            foreach (var o in bookGuids)
+            {
+                if (!booksDb.TryGetValue(o, out var offer))
+                {
+                    continue;
+                }
+                _books.Delete(offer);
+            }
+            return RedirectToPage();
+        }
+
         public override void OnPageHandlerExecuting(PageHandlerExecutingContext context)
         {
             var author = _author.FindByGuid(Guid);
@@ -86,6 +103,7 @@ namespace LibraryManagement.Webapp.Pages.Books
                 return;
             }
             Books = _books.FindByAuthorGuid(Guid).ToList();
+            BooksToDelete = Books.ToDictionary(o => o.Guid, o => false);
         }
     }
 }

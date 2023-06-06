@@ -3,8 +3,16 @@
 @{
 }
 
-<p>Authors request from database as of @DateTime.Now.ToString("g")</p>
+<p>Authors request from database as of @DateTime.Now.ToString("G")</p>
 <p>Total number of elements found: @Model.Authors.Count</p>
+
+
+@if (!string.IsNullOrEmpty(Model.Message))
+{
+    <div class="border border-danger p-3 border-3">
+        <p class="mb-0">@Model.Message</p>
+    </div>
+}
 
 <table class="table table-sm">
     <thead>
