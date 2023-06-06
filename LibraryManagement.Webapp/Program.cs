@@ -8,7 +8,7 @@ using LibraryManagement.Application.Infrastructure.Repositories;
 
 // Erstellen und seeden der Datenbank
 var opt = new DbContextOptionsBuilder()
-    .UseSqlite("Data Source=stores.db")  // Keep connection open (only needed with SQLite in memory db)
+    .UseSqlite("Data Source=library.db")  // Keep connection open (only needed with SQLite in memory db)
     .Options;
 using (var db = new LibraryContext(opt))
 {
@@ -21,7 +21,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<LibraryContext>(opt =>
 {
-    opt.UseSqlite("Data Source=stores.db");
+    opt.UseSqlite("Data Source=library.db");
 });
 builder.Services.AddTransient<AuthorRepository>();
 builder.Services.AddTransient<BookRepository>();

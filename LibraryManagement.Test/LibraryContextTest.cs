@@ -12,7 +12,7 @@ namespace LibraryManagement.Test
     {
         private LibraryContext GetDatabase(bool deleteDb = false)
         {
-            var db = new LibraryContext(new DbContextOptionsBuilder().UseSqlite("Data Source=OSHypervisor.db").UseLazyLoadingProxies().Options);
+            var db = new LibraryContext(new DbContextOptionsBuilder().UseSqlite("Data Source=library.db").UseLazyLoadingProxies().Options);
 
             if (deleteDb)
             {
