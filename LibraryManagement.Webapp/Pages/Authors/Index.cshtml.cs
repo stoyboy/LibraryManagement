@@ -1,5 +1,6 @@
 using Bogus.DataSets;
 using LibraryManagement.Application.Infrastructure;
+using LibraryManagement.Application.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -7,33 +8,16 @@ namespace LibraryManagement.Webapp.Pages.Books
 {
     public class IndexModel : PageModel
     {
-        public record AuthorWithBookCount(
-                Guid Guid,
-                string Firstname,
-                string Lastname,
-                DateTime BirthDate,
-                string Nationality,
-                int BookCount
-            );
-
-        private readonly LibraryContext _db;
-        public List<AuthorWithBookCount> Authors { get; private set; } = new();
-        public IndexModel(LibraryContext db)
+        private readonly AuthorRepository _authors;
+        public IReadOnlyList<AuthorRepository.AuthorWithBookCount> Authors { get; private set; } = new List<AuthorRepository.AuthorWithBookCount>();
+        public IndexModel(AuthorRepository authors)
         {
-            _db = db;
+            _authors = authors;
         }
 
         public void OnGet()
         {
-            Authors = _db.Authors.Select(b => new AuthorWithBookCount(
-                    b.Guid,
-                    b.Firstname,
-                    b.Lastname,
-                    b.BirthDate,
-                    b.Nationality,
-                    b.Books.Count
-                ))
-                .ToList();
+            Authors = _authors.GetAuthorsWithBookCount();
         }
     }
 }

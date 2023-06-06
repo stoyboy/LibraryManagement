@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using LibraryManagement.Application.Infrastructure;
 using LibraryManagement.Webapp.Dto;
+using LibraryManagement.Application.Infrastructure.Repositories;
 
 // Erstellen und seeden der Datenbank
 var opt = new DbContextOptionsBuilder()
@@ -22,6 +23,10 @@ builder.Services.AddDbContext<LibraryContext>(opt =>
 {
     opt.UseSqlite("Data Source=stores.db");
 });
+builder.Services.AddTransient<AuthorRepository>();
+builder.Services.AddTransient<BookRepository>();
+builder.Services.AddTransient<EmployeeRepository>();
+builder.Services.AddTransient<RoleRepository>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddRazorPages();
 

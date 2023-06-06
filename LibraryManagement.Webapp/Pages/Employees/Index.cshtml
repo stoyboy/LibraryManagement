@@ -50,7 +50,7 @@
             <tr>
                 <td>@employee.Firstname</td>
                 <td>@employee.Lastname</td>
-                <td>@employee.Role</td>
+                <td>@employee.Role.Name</td>
                 <td>
                     <a asp-page="/Employees/Edit" asp-route-guid="@employee.Guid"><i class="fa-regular fa-pen-to-square"></i></a>
                     <a asp-page="/Employees/Delete" asp-route-guid="@employee.Guid"><i class="fa-solid fa-trash"></i></a>

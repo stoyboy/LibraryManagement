@@ -1,8 +1,10 @@
 using AutoMapper;
 using LibraryManagement.Application.Infrastructure;
+using LibraryManagement.Application.Infrastructure.Repositories;
 using LibraryManagement.Application.Models;
 using LibraryManagement.Webapp.Dto;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +14,10 @@ namespace LibraryManagement.Webapp.Pages.Employees
 {
     public class IndexModel : PageModel
     {
-        private readonly LibraryContext _db;
-        private readonly IMapper _mapper;
+        private readonly EmployeeRepository _employees;
+        private readonly RoleRepository _roles;
 
-        public IEnumerable<SelectListItem> RoleSelectList => _db.Roles.OrderBy(r => r.Name).Select(r => new SelectListItem(r.Name, r.Guid.ToString()));
+        public IEnumerable<SelectListItem> RoleSelectList => _roles.Set.OrderBy(r => r.Name).Select(r => new SelectListItem(r.Name, r.Guid.ToString()));
 
         public record EmployeeWithoutId(
                 Guid Guid,
@@ -30,23 +32,24 @@ namespace LibraryManagement.Webapp.Pages.Employees
         [BindProperty]
         public EmployeeDto NewEmployee { get; set; } = default!;
         
-        public List<EmployeeWithoutId> Employees { get; private set; } = new();
+        public List<Employee> Employees { get; private set; } = new();
 
-        public IndexModel(LibraryContext db, IMapper mapper)
+        public IndexModel(EmployeeRepository employees, RoleRepository roles)
         {
-            _db = db;
-            _mapper = mapper;
+            _employees = employees;
+            _roles = roles;
         }
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
-            Employees = _db.Employees.Include(e => e.Role).Select(e => new EmployeeWithoutId(
-                    e.Guid,
-                    e.Firstname,
-                    e.Lastname,
-                    e.Role.Name
-                ))
-                .ToList();
+            var employees = _employees.Set.Include(e => e.Role).ToList();
+            if (employees == null)
+            {
+                return RedirectToPage("/Employees/Index");
+            }
+
+            Employees = employees;
+            return Page();
         }
 
         public IActionResult OnPostNewEmployee(Guid guid)
@@ -55,27 +58,14 @@ namespace LibraryManagement.Webapp.Pages.Employees
             {
                 return Page();
             }
+            var (success, message) = _employees.Insert(NewEmployee.Firstname, NewEmployee.Lastname, NewEmployee.RoleGuid);
 
-            try
+            if (!success)
             {
-                var employee = _mapper.Map<Employee>(NewEmployee);
-
-                employee.Role = _db.Roles.FirstOrDefault(r => r.Guid == NewEmployee.RoleGuid)
-                    ?? throw new ApplicationException("Ungültige Rolle.");
-
-                _db.Employees.Add(employee);
-                _db.SaveChanges();
-            }
-            catch (ApplicationException e)
-            {
-                ModelState.AddModelError("", e.Message);
+                ModelState.AddModelError("", message!);
                 return Page();
             }
-            catch (DbUpdateException)
-            {
-                ModelState.AddModelError("", "Fehler beim Schreiben in die Datenbank.");
-                return Page();
-            }
+
             return RedirectToPage();
         }
     }

@@ -1,6 +1,7 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using LibraryManagement.Application.Infrastructure;
+using LibraryManagement.Application.Infrastructure.Repositories;
 using LibraryManagement.Application.Models;
 using LibraryManagement.Webapp.Dto;
 using Microsoft.AspNetCore.Mvc;
@@ -13,12 +14,14 @@ namespace LibraryManagement.Webapp.Pages.Books
 {
     public class DetailsModel : PageModel
     {
-        private readonly LibraryContext _db;
+        private readonly AuthorRepository _author;
+        private readonly BookRepository _books;
         private readonly IMapper _mapper;
 
-        public DetailsModel(LibraryContext db, IMapper mapper)
+        public DetailsModel(AuthorRepository author, BookRepository books, IMapper mapper)
         {
-            _db = db;
+            _author = author;
+            _books = books;
             _mapper = mapper;
         }
 
@@ -30,12 +33,16 @@ namespace LibraryManagement.Webapp.Pages.Books
 
         public IActionResult OnGet(Guid guid)
         {
-            EditBooks = _db.Books.Where(b => b.Author.Guid == Guid)
+            var books = _books.FindByAuthorGuid(guid);
+            if (books == null)
+            {
+                return RedirectToPage("/Authors/Index");
+            }
+            EditBooks = books
                 .ProjectTo<BookDto>(_mapper.ConfigurationProvider)
                 .ToDictionary(b => b.Guid, b => b);
 
-            var author = _db.Authors.Include(b => b.Books).ThenInclude(b => b.Borrow).ThenInclude(b => b.Member).FirstOrDefault(a => a.Guid == guid);
-
+            var author = _author.GetAuthorWithBooks(guid);
             if (author == null)
             {
                 return RedirectToPage("/Authors/Index");
@@ -52,22 +59,18 @@ namespace LibraryManagement.Webapp.Pages.Books
                 return RedirectToPage();
             }
 
-            var book = _db.Books.FirstOrDefault(b => b.Guid == bookGuid);
+            var book = _books.FindByGuid(bookGuid);
             if (book == null)
             {
                 return RedirectToPage();
             }
             
             _mapper.Map(editBooks[bookGuid], book);
-            _db.Entry(book).State = EntityState.Modified;
+            var (success, message) = _books.Update(book);
 
-            try
+            if (!success)
             {
-                _db.SaveChanges();
-            }
-            catch (DbUpdateException)
-            {
-                ModelState.AddModelError("", "Fehler beim Schreiben in die Datenbank.");
+                ModelState.AddModelError("", message!);
                 return Page();
             }
 
@@ -76,14 +79,13 @@ namespace LibraryManagement.Webapp.Pages.Books
 
         public override void OnPageHandlerExecuting(PageHandlerExecutingContext context)
         {
-            var author = _db.Authors
-                .FirstOrDefault(a => a.Guid == Guid);
+            var author = _author.FindByGuid(Guid);
             if (author is null)
             {
                 context.Result = RedirectToPage("/Authors/Index");
                 return;
             }
-            Books = _db.Books.Include(b => b.Author).Where(a => a.Guid == Guid).ToList();
+            Books = _books.FindByAuthorGuid(Guid).ToList();
         }
     }
 }

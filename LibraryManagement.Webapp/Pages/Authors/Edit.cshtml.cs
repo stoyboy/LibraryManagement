@@ -1,5 +1,6 @@
 using AutoMapper;
 using LibraryManagement.Application.Infrastructure;
+using LibraryManagement.Application.Infrastructure.Repositories;
 using LibraryManagement.Webapp.Dto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -9,12 +10,12 @@ namespace LibraryManagement.Webapp.Pages.Authors
 {
     public class EditModel : PageModel
     {
-        private readonly LibraryContext _db;
+        private readonly AuthorRepository _author;
         private readonly IMapper _mapper;
 
-        public EditModel(LibraryContext db, IMapper mapper)
+        public EditModel(AuthorRepository author, IMapper mapper)
         {
-            _db = db;
+            _author = author;
             _mapper = mapper;
         }
         [BindProperty]
@@ -27,32 +28,30 @@ namespace LibraryManagement.Webapp.Pages.Authors
                 return Page();
             }
 
-            var author = _db.Authors.FirstOrDefault(s => s.Guid == guid);
+            var author = _author.FindByGuid(guid);
             if (author is null)
             {
                 return RedirectToPage("/Authors/Index");
             }
             _mapper.Map(Author, author);
-            _db.Entry(author).State = EntityState.Modified;
-            try
+            var (success, message) = _author.Update(author);
+
+            if (!success)
             {
-                _db.SaveChanges();
-            }
-            catch (DbUpdateException)
-            {
-                ModelState.AddModelError("", "Fehler beim Schreiben in die Datenbank");
+                ModelState.AddModelError("", message!);
                 return Page();
             }
             return RedirectToPage("/Authors/Index");
         }
+
         public IActionResult OnGet(Guid guid)
         {
-            var store = _db.Authors.FirstOrDefault(s => s.Guid == guid);
-            if (store is null)
+            var author = _author.FindByGuid(guid);
+            if (author is null)
             {
-                return RedirectToPage("/Stores/Index");
+                return RedirectToPage("/Authors/Index");
             }
-            Author = _mapper.Map<AuthorDto>(store);
+            Author = _mapper.Map<AuthorDto>(author);
             return Page();
         }
     }

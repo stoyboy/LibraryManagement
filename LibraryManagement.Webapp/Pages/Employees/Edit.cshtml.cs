@@ -1,5 +1,6 @@
 using AutoMapper;
 using LibraryManagement.Application.Infrastructure;
+using LibraryManagement.Application.Infrastructure.Repositories;
 using LibraryManagement.Application.Models;
 using LibraryManagement.Webapp.Dto;
 using Microsoft.AspNetCore.Mvc;
@@ -11,14 +12,16 @@ namespace LibraryManagement.Webapp.Pages.Employees
 {
     public class EditModel : PageModel
     {
-        private readonly LibraryContext _db;
+        private readonly EmployeeRepository _employees;
+        private readonly RoleRepository _roles;
         private readonly IMapper _mapper;
 
-        public IEnumerable<SelectListItem> RoleSelectList => _db.Roles.OrderBy(r => r.Name).Select(r => new SelectListItem(r.Name, r.Guid.ToString()));
+        public IEnumerable<SelectListItem> RoleSelectList => _roles.Set.OrderBy(r => r.Name).Select(r => new SelectListItem(r.Name, r.Guid.ToString()));
 
-        public EditModel(LibraryContext db, IMapper mapper)
+        public EditModel(EmployeeRepository employees, RoleRepository roles, IMapper mapper)
         {
-            _db = db;
+            _employees = employees;
+            _roles = roles;
             _mapper = mapper;
         }
         [BindProperty]
@@ -31,37 +34,25 @@ namespace LibraryManagement.Webapp.Pages.Employees
                 return Page();
             }
 
-            var employee = _db.Employees.FirstOrDefault(e => e.Guid == guid);
+            var employee = _employees.FindByGuid(guid);
             if (employee is null)
             {
                 return RedirectToPage("/Employees/Index");
             }
 
-            var role = _db.Roles.FirstOrDefault(r => r.Guid == Employee.RoleGuid);
-
-            if (role is null)
-            {
-                return RedirectToPage("/Employees/Index");
-            }
-
             _mapper.Map(Employee, employee);
-            employee.Role = role;
-            _db.Entry(employee).State = EntityState.Modified;
+            var (success, message) = _employees.Update(employee, Employee.RoleGuid);
 
-            try
+            if (!success)
             {
-                _db.SaveChanges();
-            }
-            catch (DbUpdateException)
-            {
-                ModelState.AddModelError("", "Fehler beim Schreiben in die Datenbank");
+                ModelState.AddModelError("", message!);
                 return Page();
             }
             return RedirectToPage("/Employees/Index");
         }
         public IActionResult OnGet(Guid guid)
         {
-            var employee = _db.Employees.FirstOrDefault(e => e.Guid == guid);
+            var employee = _employees.FindByGuid(guid);
             if (employee is null)
             {
                 return RedirectToPage("/Employees/Index");
