@@ -10,9 +10,10 @@ namespace LibraryManagement.Application.Models
 {
     [Index(nameof(Name), IsUnique = true)]
     [Table("Roles")]
-    public class Role
+    public class Role : IEntity<int>
     {
         public int RoleId { get; private set; }
+        public int Id => RoleId;
         public Guid Guid { get; set; }
         public string Name { get; set; }
         public virtual List<Employee> Employees { get; set; } = new();

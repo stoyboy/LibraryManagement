@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 namespace LibraryManagement.Application.Models
 {
     [Table("Books")]
-    public class Book
+    public class Book : IEntity<int>
     {
         public int BookId { get; private set; }
-        public Guid Guid { get; set; }
+        public int Id => BookId;
+        public Guid Guid { get; private set; }
         public string Title { get; set; }
         public int AuthorId { get; set; }
         public virtual Author Author { get; set; }
