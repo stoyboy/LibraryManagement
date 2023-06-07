@@ -17,8 +17,8 @@ namespace LibraryManagement.Webapp.Dto
     }
     public record BookDto(
         Guid Guid,
-        [StringLength(100, MinimumLength = 2, ErrorMessage = "Der Verlag muss zwischen 2 und 30 Zeichen lang sein.")]
         string? Title,
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "Der Verlag muss zwischen 2 und 30 Zeichen lang sein.")]
         string Publisher,
         [ValidYear]
         int Year,
