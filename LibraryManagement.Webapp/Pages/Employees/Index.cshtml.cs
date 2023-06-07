@@ -3,6 +3,7 @@ using LibraryManagement.Application.Infrastructure;
 using LibraryManagement.Application.Infrastructure.Repositories;
 using LibraryManagement.Application.Models;
 using LibraryManagement.Webapp.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,6 +13,7 @@ using System;
 
 namespace LibraryManagement.Webapp.Pages.Employees
 {
+    [Authorize]
     public class IndexModel : PageModel
     {
         private readonly EmployeeRepository _employees;

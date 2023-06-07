@@ -1,4 +1,5 @@
 ﻿@page
+@inject LibraryManagement.Webapp.Services.AuthService AuthService
 @model LibraryManagement.Webapp.Pages.Employees.IndexModel
 @{
 }
@@ -41,7 +42,10 @@
             <th>Vorname</th>
             <th>Nachname</th>
             <th>Role</th>
-            <th>Aktionen</th>
+            @if (AuthService.IsAuthenticated)
+            {
+                <th>Aktionen</th>
+            }
         </tr>
     </thead>
     <tbody>
@@ -51,10 +55,13 @@
                 <td>@employee.Firstname</td>
                 <td>@employee.Lastname</td>
                 <td>@employee.Role.Name</td>
-                <td>
-                    <a asp-page="/Employees/Edit" asp-route-guid="@employee.Guid"><i class="fa-regular fa-pen-to-square"></i></a>
-                    <a asp-page="/Employees/Delete" asp-route-guid="@employee.Guid"><i class="fa-solid fa-trash"></i></a>
-                </td>
+                @if (AuthService.IsAuthenticated)
+                {
+                    <td>
+                        <a asp-page="/Employees/Edit" asp-route-guid="@employee.Guid"><i class="fa-regular fa-pen-to-square"></i></a>
+                        <a asp-page="/Employees/Delete" asp-route-guid="@employee.Guid"><i class="fa-solid fa-trash"></i></a>
+                    </td>
+                }
             </tr>
         }
     </tbody>

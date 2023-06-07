@@ -28,6 +28,8 @@ namespace LibraryManagement.Webapp.Pages.Books
         [FromRoute]
         public Guid Guid { get; set; }
         public Author Author { get; private set; } = default!;
+        [BindProperty]
+        public BookDto NewBook { get; set; } = default!;
         public IReadOnlyList<Book> Books { get; private set; } = new List<Book>();
         public Dictionary<Guid, BookDto> EditBooks { get; set; } = new();
         public Dictionary<Guid, bool> BooksToDelete { get; set; } = new();
@@ -51,6 +53,35 @@ namespace LibraryManagement.Webapp.Pages.Books
 
             Author = author;
             return Page();
+        }
+
+        public IActionResult OnPostNewBook(Guid guid)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            var author = _author.FindByGuid(guid);
+            if (author == null)
+            {
+                return RedirectToPage("/Authors/Index");
+            }
+
+            if (String.IsNullOrEmpty(NewBook.Title))
+            {
+                ModelState.AddModelError("", "Titel ist leer");
+                return Page();
+            }
+            var (success, message) = _books.Insert(new Book(NewBook.Title, author, NewBook.Publisher, NewBook.Year, NewBook.Rating));
+
+            if (!success)
+            {
+                ModelState.AddModelError("", message!);
+                return Page();
+            }
+
+            return RedirectToPage();
         }
 
         public IActionResult OnPostEditBook(Guid guid, Guid bookGuid, Dictionary<Guid, BookDto> editBooks)

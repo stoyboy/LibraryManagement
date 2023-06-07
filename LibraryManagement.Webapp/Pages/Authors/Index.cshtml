@@ -1,4 +1,5 @@
 ﻿@page
+@inject LibraryManagement.Webapp.Services.AuthService AuthService
 @model LibraryManagement.Webapp.Pages.Books.IndexModel
 @{
 }
@@ -36,8 +37,11 @@
                 <td>@author.BookCount</td>
                 <td>
                     <a class="ms-2" asp-page="/Authors/Details" asp-route-guid="@author.Guid"><i class="fa-solid fa-circle-info"></i></a>
-                    <a class="ms-2" asp-page="/Authors/Edit" asp-route-guid="@author.Guid"><i class="fa-regular fa-pen-to-square"></i></a>
-                    <a class="ms-2" asp-page="/Authors/Delete" asp-route-guid="@author.Guid"><i class="fa-solid fa-trash"></i></a>
+                    @if (AuthService.IsAuthenticated)
+                    {
+                        <a class="ms-2" asp-page="/Authors/Edit" asp-route-guid="@author.Guid"><i class="fa-regular fa-pen-to-square"></i></a>
+                        <a class="ms-2" asp-page="/Authors/Delete" asp-route-guid="@author.Guid"><i class="fa-solid fa-trash"></i></a>
+                    }
                 </td>
             </tr>
         }

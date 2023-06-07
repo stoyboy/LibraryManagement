@@ -1,9 +1,52 @@
 ﻿@page "{guid}"
+@inject LibraryManagement.Webapp.Services.AuthService AuthService
 @model LibraryManagement.Webapp.Pages.Books.DetailsModel
 @{
 }
 
 <h3>Details of author @Model.Author.Firstname @Model.Author.Lastname</h3>
+<br />
+
+@if (AuthService.IsAuthenticated)
+{
+    <form method="post" asp-page-handler="NewBook">
+        <div class="row">
+            <div class="col-6">
+                <label asp-for="NewBook.Title">Titel</label>
+                <input class="form-control" asp-for="NewBook.Title" />
+                <small>
+                    <span class="text-danger" asp-validation-for="NewBook.Title"></span>
+                </small>
+            </div>
+            <div class="col-6">
+                <label asp-for="NewBook.Publisher">Verlag</label>
+                <input class="form-control" asp-for="NewBook.Publisher" />
+                <small>
+                    <span class="text-danger" asp-validation-for="NewBook.Publisher"></span>
+                </small>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <label asp-for="NewBook.Year">Jahr der Veröffentlichung</label>
+                <input class="form-control" asp-for="NewBook.Year" />
+                <small>
+                    <span class="text-danger" asp-validation-for="NewBook.Year"></span>
+                </small>
+            </div>
+            <div class="col-6">
+                <label asp-for="NewBook.Rating">Bewertung</label>
+                <input class="form-control" asp-for="NewBook.Rating" min="0" max="10" />
+                <small>
+                    <span class="text-danger" asp-validation-for="NewBook.Rating"></span>
+                </small>
+            </div>
+        </div>
+        <div class="text-danger" asp-validation-summary=ModelOnly></div>
+        <button class="mt-2 btn btn-primary">Speichern</button>
+    </form>
+}
+
 <br />
 <h4>List of their books</h4>
 
@@ -18,8 +61,11 @@
                 <th>Nicht verfügbar bis</th>
                 <th>Ausgeliehen von</th>
                 <th>Rating</th>
-                <th>Aktion</th>
-                <th>Löschen?</th>
+                @if (AuthService.IsAuthenticated)
+                {
+                    <th>Aktion</th>
+                    <th>Löschen?</th>
+                }
             </tr>
         </thead>
         <tbody>
@@ -31,10 +77,26 @@
                 <tr style="@(book.Rating == 10 ? "background-color: #F0E68C" : "")">
                     <td>@book.Title</td>
                     <td>
-                        <input type="hidden" asp-for="EditBooks[book.Guid].Guid" />
-                        <input asp-for="EditBooks[book.Guid].Publisher" />
+                        @if (AuthService.IsAuthenticated)
+                        {
+                            <input type="hidden" asp-for="EditBooks[book.Guid].Guid" />
+                            <input asp-for="EditBooks[book.Guid].Publisher" />
+                        }
+                        else
+                        {
+                            @book.Publisher
+                        }
                     </td>
-                    <td><input style="width: 100px" asp-for="EditBooks[book.Guid].Year" /></td>
+                    <td>
+                        @if (AuthService.IsAuthenticated)
+                        {
+                            <input style="width: 100px" asp-for="EditBooks[book.Guid].Year" />
+                        }
+                        else
+                        {
+                            @book.Year
+                        }
+                    </td>
                     <td class="@(book.Borrow == null ? "" : "text-danger")">@(book.Borrow == null ? "verfügbar" : "nicht verfügbar")</td>
                     <td class="@(book.Borrow == null ? "" : "text-danger")">@returnDate</td>
                     <td class="@(book.Borrow == null ? "" : "text-danger")">
@@ -43,18 +105,32 @@
                             <a asp-page="/Members/Details" asp-route-guid="@book.Borrow.Member.Guid">@borrowMember</a>
                         }
                     </td>
-                    <td><input style="width: 50px" asp-for="EditBooks[book.Guid].Rating" min="0" max="10" /> / 10</td>
-                    <td><button class="btn btn-primary" type="submit" asp-page-handler="EditBook" asp-route-bookGuid="@book.Guid">Speichern</button></td>
                     <td>
-                        <input class="form-check-input" asp-for="BooksToDelete[book.Guid]" />
-                    </td>
+                        @if (AuthService.IsAuthenticated)
+                        {
+                            <input style="width: 50px" asp-for="EditBooks[book.Guid].Rating" min="0" max="10" />
+                        }
+                        else
+                        {
+                            @book.Rating
+                        }
+                        / 10</td>
+                    @if (AuthService.IsAuthenticated)
+                    {
+                        <td><button class="btn btn-primary" type="submit" asp-page-handler="EditBook" asp-route-bookGuid="@book.Guid">Speichern</button></td>
+                        <td>
+                            <input class="form-check-input" asp-for="BooksToDelete[book.Guid]" />
+                        </td>
+                    }
                 </tr>
             }
         </tbody>
     </table>
-
-    <button type="submit" class="btn btn-danger"
+    @if (AuthService.IsAuthenticated)
+    {
+        <button type="submit" class="btn btn-danger"
         asp-page-handler="Delete">
-        Ausgewählte Elemente löschen
-    </button>
+            Ausgewählte Elemente löschen
+        </button>
+    }
 </form>

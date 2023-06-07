@@ -3,6 +3,7 @@ using LibraryManagement.Application.Infrastructure;
 using LibraryManagement.Application.Infrastructure.Repositories;
 using LibraryManagement.Application.Models;
 using LibraryManagement.Webapp.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManagement.Webapp.Pages.Employees
 {
+    [Authorize]
     public class EditModel : PageModel
     {
         private readonly EmployeeRepository _employees;

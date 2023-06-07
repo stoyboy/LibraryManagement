@@ -1,11 +1,13 @@
 using LibraryManagement.Application.Infrastructure.Repositories;
 using LibraryManagement.Application.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using static System.Formats.Asn1.AsnWriter;
 
 namespace LibraryManagement.Webapp.Pages.Authors
 {
+    [Authorize]
     public class DeleteModel : PageModel
     {
         private readonly AuthorRepository _authors;

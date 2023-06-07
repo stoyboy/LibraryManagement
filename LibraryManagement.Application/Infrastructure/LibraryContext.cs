@@ -19,6 +19,7 @@ namespace LibraryManagement.Application.Infrastructure
         public DbSet<Employee> Employees => Set<Employee>();
         public DbSet<Borrow> Borrows => Set<Borrow>();
         public DbSet<Role> Roles => Set<Role>();
+        public DbSet<User> Users => Set<User>();
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -48,9 +49,18 @@ namespace LibraryManagement.Application.Infrastructure
             modelBuilder.Entity<Member>().Property(m => m.Guid).ValueGeneratedOnAdd();
         }
 
-        public void Seed()
+        public void Seed(ICryptService cryptService)
         {
             Randomizer.Seed = new Random(69420);
+
+            var adminSalt = cryptService.GenerateSecret(256);
+            var admin = new User(
+                username: "admin",
+                salt: adminSalt,
+                passwordHash: cryptService.GenerateHash(adminSalt, "1234"),
+                usertype: Usertype.Admin);
+            Users.Add(admin);
+            SaveChanges();
 
             var author = new Faker<Author>("de").CustomInstantiator(a => new Author(
                  firstname: a.Person.FirstName,
@@ -78,8 +88,7 @@ namespace LibraryManagement.Application.Infrastructure
 
             var member = new Faker<Member>("de").CustomInstantiator(m => new Member(
                 firstname: m.Person.FirstName,
-                lastname: m.Person.LastName,
-                isAdmin: m.Random.Bool()
+                lastname: m.Person.LastName
                 ))
                 .Generate(50)
                 .ToList();

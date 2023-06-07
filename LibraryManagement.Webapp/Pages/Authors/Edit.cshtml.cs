@@ -2,12 +2,14 @@ using AutoMapper;
 using LibraryManagement.Application.Infrastructure;
 using LibraryManagement.Application.Infrastructure.Repositories;
 using LibraryManagement.Webapp.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManagement.Webapp.Pages.Authors
 {
+    [Authorize]
     public class EditModel : PageModel
     {
         private readonly AuthorRepository _author;
